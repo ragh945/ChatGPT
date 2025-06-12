@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatGPT Voice Bot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(-45deg, #43cea2, #185a9d, #43cea2, #185a9d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 700px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #185a9d;
+            margin-bottom: 20px;
+        }
+
+        .message-box {
+            background: #f4f4f4;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .user-message { background-color: #d0ebff; text-align: right; }
+        .bot-message { background-color: #e6ffe6; }
+
+        input[type="text"], input[type="file"], button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            background-color: #185a9d;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #124a7f;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>ChatGPT Voice Bot</h1>
+
+        {% if not name %}
+            <form method="post">
+                {% csrf_token %}
+                <label>Enter your name:</label>
+                <input type="text" name="name" required placeholder="Your name">
+                <button type="submit">Submit</button>
+            </form>
+        {% elif not api_key %}
+            <form method="post">
+                {% csrf_token %}
+                <label>Enter your Groq API Key:</label>
+                <input type="text" name="api_key" required placeholder="Your API Key">
+                <button type="submit">Save API Key</button>
+            </form>
+        {% else %}
+            <div class="message-box bot-message">
+                👋 Hi {{ name }}! Upload a PDF and then click "Ask via Voice".
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label>Upload a PDF:</label>
+                <input type="file" name="pdf" accept=".pdf" required>
+                <button type="submit">Upload PDF</button>
+            </form>
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="ask" value="1">
+                <button type="submit">Ask via Voice 🎤</button>
+            </form>
+
+            {% if user_input %}
+                <div class="message-box user-message">
+                    🧑‍💻 You: {{ user_input }}
+                </div>
+            {% endif %}
+
+            {% if response %}
+                <div class="message-box bot-message">
+                    🤖 Bot:
+                    <div style="margin-top: 8px;">{{ response|safe }}</div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

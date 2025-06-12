@@ -1,0 +1,14 @@
+django 
+langchain 
+faiss-cpu 
+sentence-transformers 
+openai 
+requests 
+beautifulsoup4 
+tiktoken 
+pypdf 
+groq 
+gtts 
+SpeechRecognition 
+pyaudio
+pygame
